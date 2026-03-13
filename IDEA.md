@@ -33,10 +33,14 @@ To provide a fun, low-pressure environment for children to practice reading and 
 ## Technical Goals
 *   **Frontend:** Built using simple, standard web technologies: HTML, CSS, and vanilla JavaScript.
 *   **Storage:** `localStorage` for lightweight, client-side data storage of game content.
-*   **Accessibility:** Every game mode that displays text on screen must have an option to listen to that text using Text-to-Speech (TTS).
+*   **Accessibility:** 
+    *   **Text-to-Speech (TTS):** Every game mode that displays text on screen must have an option to listen to that text.
+    *   **Hover-to-Speak Toggle:** A toggleable "Listen" setting. When active, hovering over images, word options, or sentences will trigger TTS to read the content aloud. For "Complete the Phrase" mode, hovering over the sentence will read it with the correct word filled in.
 *   Visually engaging and child-friendly UI.
 *   Progressive difficulty levels.
 *   Immediate positive reinforcement for correct answers.
+*   **Audio Feedback:** The game uses sound effects (`correct.mp3`, `wrong.mp3`, `finish.mp3`) to provide immediate auditory feedback for user actions and game completion, replacing some verbal TTS cues.
 *   **Retry Option:** A "Retry" button must be available to allow children to attempt the same question again if they make a mistake.
 *   **Randomized Game Flow:** The main screen features a "Start Game" button that launches a randomized sequence of questions from all available modes, ensuring a fresh experience every time.
 *   **Seamless Transitions:** The game must transition between the main menu and game questions within the same centered card, avoiding any scrolling or layout shifts.
+*   **Victory Screen:** Upon completing all questions, a vibrant "Victory" screen displays the child's total score and provides a button to return to the main menu, replacing standard browser alerts.

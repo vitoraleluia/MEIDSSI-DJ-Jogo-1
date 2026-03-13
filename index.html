@@ -45,6 +45,16 @@
                     <button id="next-btn" class="hidden" onclick="loadNextQuestion()">Next Question</button>
                 </div>
             </div>
+
+            <!-- Victory Screen -->
+            <div id="victory-screen" class="screen hidden">
+                <div class="victory-content">
+                    <h2 style="font-size: 3em; color: var(--green);">🎉 YOU DID IT! 🎉</h2>
+                    <p style="font-size: 2em;">You completed all the questions!</p>
+                    <div id="final-score" style="font-size: 3em; font-weight: 700; color: var(--pink); margin: 20px 0;">Final Score: 0</div>
+                    <button onclick="showMenu()" style="font-size: 1.5em; background-color: var(--blue); color: white; box-shadow: 0 8px 0 #0288D1;">Play Again! 🔄</button>
+                </div>
+            </div>
         </main>
     </div>
 
