@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Literacy Helper</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>Add New Content</h1>
+            <nav id="main-nav">
+                <button onclick="window.location.href='index.html'">Back to Game</button>
+            </nav>
+        </header>
+
+        <main>
+            <form id="add-question-form" class="admin-form">
+                <label for="mode">Game Mode:</label>
+                <select id="mode" name="mode" required onchange="updateFormFields()">
+                    <option value="image-match">Image-Word Matching</option>
+                    <option value="complete-phrase">Complete the Phrase</option>
+                    <option value="syllable-builder">Syllable Builder</option>
+                    <option value="keyboard-typing">Keyboard Typing Helper</option>
+                </select>
+
+                <label for="image">Image (URL or Upload):</label>
+                <input type="text" id="image-url" placeholder="Image URL (optional)">
+                <input type="file" id="image-file" accept="image/*">
+
+                <div id="dynamic-fields">
+                    <!-- Fields will change based on mode -->
+                </div>
+
+                <label for="correct_answer">Correct Answer:</label>
+                <input type="text" id="correct_answer" name="correct_answer" required>
+
+                <button type="submit">Add Question</button>
+                <button type="button" onclick="clearData()" style="background-color: var(--accent-color); margin-top: 20px;">Clear All Data</button>
+            </form>
+        </main>
+    </div>
+
+    <script>
+        const modeSelect = document.getElementById('mode');
+        const dynamicFields = document.getElementById('dynamic-fields');
+        const form = document.getElementById('add-question-form');
+
+        function updateFormFields() {
+            const mode = modeSelect.value;
+            dynamicFields.innerHTML = '';
+
+            if (mode === 'image-match' || mode === 'complete-phrase') {
+                dynamicFields.innerHTML = `
+                    <label for="text">Question Text ${mode === 'complete-phrase' ? '(use ___ for blank)' : ''}:</label>
+                    <input type="text" id="text" name="text" required>
+                    <label for="options">Options (comma separated):</label>
+                    <input type="text" id="options" name="options" placeholder="e.g. apple, banana, cherry" required>
+                `;
+            } else if (mode === 'syllable-builder') {
+                dynamicFields.innerHTML = `
+                    <label for="text">Target Word:</label>
+                    <input type="text" id="text" name="text" required>
+                    <label for="syllables">Syllables (comma separated, in correct order):</label>
+                    <input type="text" id="syllables" name="syllables" placeholder="e.g. ba, na, na" required>
+                `;
+            } else if (mode === 'keyboard-typing') {
+                dynamicFields.innerHTML = `
+                    <label for="text">Target Word:</label>
+                    <input type="text" id="text" name="text" required>
+                `;
+            }
+        }
+
+        async function fileToBase64(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = () => resolve(reader.result);
+                reader.onerror = error => reject(error);
+                reader.readAsDataURL(file);
+            });
+        }
+
+        form.onsubmit = async (e) => {
+            e.preventDefault();
+            
+            const mode = modeSelect.value;
+            const correctAnswer = document.getElementById('correct_answer').value;
+            let image = document.getElementById('image-url').value;
+            const fileInput = document.getElementById('image-file');
+
+            if (fileInput.files.length > 0) {
+                image = await fileToBase64(fileInput.files[0]);
+            }
+
+            const newQuestion = {
+                mode,
+                image,
+                correct_answer: correctAnswer
+            };
+
+            if (mode === 'image-match' || mode === 'complete-phrase') {
+                newQuestion.text = document.getElementById('text').value;
+                newQuestion.options = document.getElementById('options').value.split(',').map(s => s.trim());
+            } else if (mode === 'syllable-builder') {
+                newQuestion.text = document.getElementById('text').value;
+                newQuestion.syllables = document.getElementById('syllables').value.split(',').map(s => s.trim());
+            } else if (mode === 'keyboard-typing') {
+                newQuestion.text = document.getElementById('text').value;
+            }
+
+            // Save to localStorage
+            const storedQuestions = JSON.parse(localStorage.getItem('questions') || '[]');
+            storedQuestions.push(newQuestion);
+            localStorage.setItem('questions', JSON.stringify(storedQuestions));
+
+            alert("Question added successfully!");
+            form.reset();
+            updateFormFields();
+        };
+
+        function clearData() {
+            if (confirm("Are you sure you want to clear all data and reset to initial questions?")) {
+                localStorage.removeItem('questions');
+                alert("Data cleared. Refreshing...");
+                window.location.reload();
+            }
+        }
+
+        updateFormFields();
+    </script>
+</body>
+</html>

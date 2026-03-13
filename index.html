@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Literacy Helper</title>
+    <link rel="stylesheet" href="style.css">
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div id="game-container">
+        <header>
+            <h1>Literacy Helper</h1>
+            <nav id="main-nav">
+                <button onclick="showMenu()">Main Menu</button>
+                <button onclick="window.location.href='admin.html'">Add Content</button>
+            </nav>
+        </header>
+
+        <main id="content">
+            <!-- Main Menu -->
+            <div id="menu" class="screen">
+                <h2>Select a Game Mode</h2>
+                <div class="mode-buttons">
+                    <button onclick="startGame('image-match')">Image-Word Matching</button>
+                    <button onclick="startGame('complete-phrase')">Complete the Phrase</button>
+                    <button onclick="startGame('syllable-builder')">Syllable Builder</button>
+                    <button onclick="startGame('keyboard-typing')">Keyboard Typing Helper</button>
+                </div>
+            </div>
+
+            <!-- Game Screens (Hidden by default) -->
+            <div id="game-screen" class="screen hidden">
+                <div class="status-bar">
+                   <button id="tts-btn" class="icon-btn">🔊 Listen</button>
+                   <span id="score">Score: 0</span>
+                </div>
+                
+                <div id="question-area">
+                    <img id="game-image" src="" alt="Game Image" class="hidden">
+                    <div id="question-text"></div>
+                    <div id="interaction-area"></div>
+                </div>
+
+                <div id="feedback" class="hidden"></div>
+                <div class="controls">
+                    <button id="retry-btn" class="hidden" onclick="loadQuestion()">Retry</button>
+                    <button id="next-btn" class="hidden" onclick="loadNextQuestion()">Next Question</button>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>

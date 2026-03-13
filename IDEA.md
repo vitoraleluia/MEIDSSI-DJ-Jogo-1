@@ -28,14 +28,13 @@ To provide a fun, low-pressure environment for children to practice reading and 
 *   **Visual Aid:** To assist the user, letters that belong to the target word are highlighted with a distinct background color on the virtual keyboard.
 
 ## Content Management
-*   **Authentication:** The system must allow users to authenticate.
-*   **Contribution:** Authenticated users can contribute new content by adding questions, answers, and images for any of the game modes.
+*   **Contribution:** Users can contribute new content by adding questions, answers, and images (via URLs or Base64) for any of the game modes. Data is stored locally in the browser.
 
 ## Technical Goals
 *   **Frontend:** Built using simple, standard web technologies: HTML, CSS, and vanilla JavaScript.
-*   **Backend:** Express.js for the server and API.
-*   **Database:** SQLite for lightweight, file-based data storage of users and game content.
+*   **Storage:** `localStorage` for lightweight, client-side data storage of game content.
 *   **Accessibility:** Every game mode that displays text on screen must have an option to listen to that text using Text-to-Speech (TTS).
 *   Visually engaging and child-friendly UI.
 *   Progressive difficulty levels.
 *   Immediate positive reinforcement for correct answers.
+*   **Retry Option:** A "Retry" button must be available to allow children to attempt the same question again if they make a mistake.
