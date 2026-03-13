@@ -38,3 +38,5 @@ To provide a fun, low-pressure environment for children to practice reading and 
 *   Progressive difficulty levels.
 *   Immediate positive reinforcement for correct answers.
 *   **Retry Option:** A "Retry" button must be available to allow children to attempt the same question again if they make a mistake.
+*   **Randomized Game Flow:** The main screen features a "Start Game" button that launches a randomized sequence of questions from all available modes, ensuring a fresh experience every time.
+*   **Seamless Transitions:** The game must transition between the main menu and game questions within the same centered card, avoiding any scrolling or layout shifts.

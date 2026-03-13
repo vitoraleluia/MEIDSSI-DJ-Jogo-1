@@ -43,23 +43,23 @@ function showMenu() {
     currentQuestionIndex = 0;
 }
 
-// Start a game mode
-function startGame(mode) {
-    currentMode = mode;
+// Start a randomized game with all modes
+function startRandomGame() {
     initQuestions();
     
-    const filteredQuestions = questions.filter(q => q.mode === mode);
-    
-    if (filteredQuestions.length === 0) {
-        alert("No questions found for this mode. Go to 'Add Content' to add some!");
-        showMenu();
+    if (questions.length === 0) {
+        alert("No questions found! Go to 'Add Content' to add some!");
         return;
     }
     
-    activeQuestions = filteredQuestions;
+    // Shuffle all questions
+    activeQuestions = [...questions].sort(() => Math.random() - 0.5);
+    
     menuScreen.classList.add('hidden');
     gameScreen.classList.remove('hidden');
     currentQuestionIndex = 0;
+    score = 0;
+    scoreDisplay.innerText = `Score: ${score}`;
     loadQuestion();
 }
 
@@ -68,6 +68,7 @@ let activeQuestions = [];
 // Load a question based on the current mode
 function loadQuestion() {
     const question = activeQuestions[currentQuestionIndex];
+    currentMode = question.mode; // Update mode dynamically
     feedback.classList.add('hidden');
     nextBtn.classList.add('hidden');
     retryBtn.classList.add('hidden');
