@@ -19,26 +19,32 @@ const retryBtn = document.getElementById('retry-btn');
 const ttsBtn = document.getElementById('tts-btn');
 const scoreDisplay = document.getElementById('score');
 
-// Initial seed data for demonstration (used only if localStorage is empty)
+// Versão dos dados para forçar atualização se necessário
+const DATA_VERSION = "1.1";
+
+// Dados iniciais em Português (Portugal)
 const initialData = [
-    { mode: 'image-match', image: 'https://cdn-icons-png.flaticon.com/512/415/415733.png', text: 'Apple', options: ['Apple', 'Banana', 'Cherry'], correct_answer: 'Apple' },
-    { mode: 'complete-phrase', image: null, text: 'The ___ is on the table.', options: ['cat', 'car', 'can'], correct_answer: 'cat' },
-    { mode: 'syllable-builder', image: 'https://cdn-icons-png.flaticon.com/512/2909/2909761.png', text: 'Banana', syllables: ['ba', 'na', 'na'], correct_answer: 'Banana' },
-    { mode: 'keyboard-typing', image: 'https://cdn-icons-png.flaticon.com/512/744/744465.png', text: 'Car', correct_answer: 'Car' }
+    { mode: 'image-match', image: 'https://cdn-icons-png.flaticon.com/512/415/415733.png', text: 'Maçã', options: ['Maçã', 'Pêra', 'Uva'], correct_answer: 'Maçã' },
+    { mode: 'complete-phrase', image: null, text: 'O ___ gosta de comer peixe.', options: ['gato', 'rato', 'cão'], correct_answer: 'gato' },
+    { mode: 'syllable-builder', image: 'https://cdn-icons-png.flaticon.com/512/2909/2909761.png', text: 'Banana', syllables: ['Ba', 'na', 'na'], correct_answer: 'Banana' },
+    { mode: 'keyboard-typing', image: 'https://cdn-icons-png.flaticon.com/512/744/744465.png', text: 'Carro', correct_answer: 'Carro' },
+    { mode: 'image-match', image: 'https://cdn-icons-png.flaticon.com/512/3069/3069172.png', text: 'Sol', options: ['Sol', 'Lua', 'Estrela'], correct_answer: 'Sol' }
 ];
 
-// Initialize questions from localStorage or seed data
 function initQuestions() {
     const storedQuestions = localStorage.getItem('questions');
-    if (storedQuestions) {
-        questions = JSON.parse(storedQuestions);
-    } else {
+    const storedVersion = localStorage.getItem('questions_version');
+    
+    // Se não houver dados ou a versão for antiga (ou se os dados forem os de teste em inglês), resetar
+    if (!storedQuestions || storedVersion !== DATA_VERSION || storedQuestions.includes('"Apple"')) {
         questions = initialData;
         localStorage.setItem('questions', JSON.stringify(questions));
+        localStorage.setItem('questions_version', DATA_VERSION);
+    } else {
+        questions = JSON.parse(storedQuestions);
     }
 }
 
-// Show the main menu
 function showMenu() {
     menuScreen.classList.remove('hidden');
     gameScreen.classList.add('hidden');
@@ -47,11 +53,10 @@ function showMenu() {
     currentQuestionIndex = 0;
 }
 
-// Start a randomized game with all modes
 function startRandomGame() {
     initQuestions();
     if (questions.length === 0) {
-        alert("No questions found! Go to 'Add Content' to add some!");
+        alert("Não foram encontradas perguntas! Vai a 'Adicionar Conteúdo' para criares algumas!");
         return;
     }
     activeQuestions = [...questions].sort(() => Math.random() - 0.5);
@@ -60,30 +65,28 @@ function startRandomGame() {
     victoryScreen.classList.add('hidden');
     currentQuestionIndex = 0;
     score = 0;
-    scoreDisplay.innerText = `Score: ${score}`;
+    scoreDisplay.innerText = `Pontos: ${score}`;
     loadQuestion();
 }
 
 let activeQuestions = [];
 
-// Audio Functions
 function playSound(file) {
     const audio = new Audio(`sounds/${file}`);
-    audio.play().catch(e => console.log("Audio play failed:", e));
+    audio.play().catch(e => console.log("Erro ao reproduzir áudio:", e));
 }
 
-// TTS Functions
 function toggleTTS() {
     ttsEnabled = !ttsEnabled;
-    ttsBtn.innerText = ttsEnabled ? "🔊 Listening" : "🔇 Listen";
+    ttsBtn.innerText = ttsEnabled ? "🔊 A Ouvir" : "🔇 Ouvir";
     ttsBtn.style.backgroundColor = ttsEnabled ? "var(--green)" : "var(--orange)";
-    if (ttsEnabled) speak("TTS enabled. Hover over items to hear them!");
+    if (ttsEnabled) speak("Voz ligada. Passa o rato sobre os itens para os ouvires!");
 }
 
 function speak(text) {
     window.speechSynthesis.cancel();
     const utterance = new SpeechSynthesisUtterance(text);
-    utterance.lang = 'en-US';
+    utterance.lang = 'pt-PT';
     window.speechSynthesis.speak(utterance);
 }
 
@@ -95,11 +98,9 @@ function attachTTS(element, textFunc) {
 
 function getSpeakableText(q) {
     if (q.mode === 'complete-phrase') return q.text.replace('___', q.correct_answer);
-    if (q.mode === 'image-match') return q.correct_answer;
     return q.correct_answer;
 }
 
-// Load a question based on the current mode
 function loadQuestion() {
     const question = activeQuestions[currentQuestionIndex];
     currentMode = question.mode;
@@ -128,12 +129,11 @@ function loadQuestion() {
     }
 
     ttsBtn.onclick = toggleTTS;
-    attachTTS(questionText, () => (currentMode === 'complete-phrase' ? question.text.replace('___', 'blank') : questionText.innerText));
+    attachTTS(questionText, () => (currentMode === 'complete-phrase' ? question.text.replace('___', 'espaço em branco') : questionText.innerText));
 }
 
-// MODE: Image-Word Matching
 function renderImageMatch(q) {
-    questionText.innerText = "Select the correct word:";
+    questionText.innerText = "Escolhe a palavra correta:";
     q.options.forEach(opt => {
         const btn = document.createElement('button');
         btn.innerText = opt;
@@ -144,7 +144,6 @@ function renderImageMatch(q) {
     });
 }
 
-// MODE: Complete the Phrase
 function renderCompletePhrase(q) {
     questionText.innerText = q.text;
     q.options.forEach(opt => {
@@ -163,9 +162,8 @@ function renderCompletePhrase(q) {
     if (q.image) attachTTS(gameImage, fullSentenceFunc);
 }
 
-// MODE: Syllable Builder
 function renderSyllableBuilder(q) {
-    questionText.innerText = "Build the word:";
+    questionText.innerText = "Constrói a palavra:";
     const syllables = [...q.syllables].sort(() => Math.random() - 0.5);
     const currentBuild = document.createElement('div');
     currentBuild.id = 'current-build';
@@ -190,10 +188,9 @@ function renderSyllableBuilder(q) {
     });
 }
 
-// MODE: Keyboard Typing Helper
 function renderKeyboardTyping(q) {
     targetWord = q.correct_answer.toUpperCase();
-    questionText.innerText = "Type the word:";
+    questionText.innerText = "Escreve a palavra:";
     const display = document.createElement('div');
     display.id = 'typing-display';
     interactionArea.appendChild(display);
@@ -230,21 +227,21 @@ function checkAnswer(selected, correct, element) {
     const isCorrect = selected.toLowerCase() === correct.toLowerCase();
     if (isCorrect) {
         score += 10;
-        feedback.innerText = "🌟 Amazing! Correct! 🌟";
+        feedback.innerText = "🌟 Incrível! Estás correto! 🌟";
         feedback.className = "correct";
         if (element && element.classList) element.classList.add('correct');
         playSound('correct.mp3');
         nextBtn.classList.remove('hidden');
         retryBtn.classList.add('hidden');
     } else {
-        feedback.innerText = "Try again! You can do it!";
+        feedback.innerText = "Tenta outra vez! Tu consegues!";
         feedback.className = "wrong";
         if (element && element.classList) element.classList.add('wrong');
         playSound('wrong.mp3');
         retryBtn.classList.remove('hidden');
         nextBtn.classList.add('hidden');
     }
-    scoreDisplay.innerText = `Score: ${score}`;
+    scoreDisplay.innerText = `Pontos: ${score}`;
     feedback.classList.remove('hidden');
 }
 
@@ -260,7 +257,7 @@ function loadNextQuestion() {
 function showVictoryScreen() {
     gameScreen.classList.add('hidden');
     victoryScreen.classList.remove('hidden');
-    finalScoreDisplay.innerText = `Final Score: ${score}`;
+    finalScoreDisplay.innerText = `Pontuação Final: ${score}`;
     playSound('finish.mp3');
 }
 
