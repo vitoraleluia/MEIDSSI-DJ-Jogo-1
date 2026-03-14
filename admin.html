@@ -40,12 +40,13 @@
                 <label for="correct_answer">Resposta Correta:</label>
                 <input type="text" id="correct_answer" name="correct_answer" required>
 
-                <button type="submit">Adicionar Pergunta</button>
-                <button type="button" onclick="clearData()" style="background-color: var(--pink); color: white; margin-top: 20px; box-shadow: 0 6px 0 #C2185B;">Apagar Todos os Dados</button>
+                <button type="submit" style="background-color: var(--laranja); color: white; border: none; width: 100%; margin-top: 10px;">Adicionar Pergunta</button>
+                <button type="button" onclick="clearData()" style="background-color: #eee; color: #777; border: 1px solid #ddd; width: 100%; margin-top: 20px;">Apagar Todos os Dados</button>
             </form>
         </main>
     </div>
 
+    <script src="questions.js"></script>
     <script>
         const modeSelect = document.getElementById('mode');
         const dynamicFields = document.getElementById('dynamic-fields');
