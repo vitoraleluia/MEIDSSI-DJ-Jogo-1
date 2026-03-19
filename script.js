@@ -19,6 +19,9 @@ const retryBtn = document.getElementById('retry-btn');
 const ttsBtn = document.getElementById('tts-btn');
 const scoreDisplay = document.getElementById('score');
 
+let focusedElementIndex = 0;
+let interactiveElements = [];
+
 function initQuestions() {
     const storedQuestions = localStorage.getItem('questions');
     const storedVersion = localStorage.getItem('questions_version');
@@ -33,12 +36,81 @@ function initQuestions() {
     }
 }
 
+function updateInteractiveElements() {
+    interactiveElements = Array.from(document.querySelectorAll('button:not(.hidden), .option-btn, .syllable-btn, .key'));
+    focusedElementIndex = 0;
+    if (interactiveElements.length > 0) {
+        interactiveElements[0].focus();
+        interactiveElements[0].classList.add('focused');
+    }
+}
+
+function clearFocus() {
+    interactiveElements.forEach(el => el.classList.remove('focused'));
+}
+
+function moveFocus(direction) {
+    clearFocus();
+    if (direction === 'forward') {
+        focusedElementIndex = (focusedElementIndex + 1) % interactiveElements.length;
+    } else if (direction === 'backward') {
+        focusedElementIndex = (focusedElementIndex - 1 + interactiveElements.length) % interactiveElements.length;
+    }
+    if (interactiveElements[focusedElementIndex]) {
+        interactiveElements[focusedElementIndex].focus();
+        interactiveElements[focusedElementIndex].classList.add('focused');
+    }
+}
+
+function handleKeydown(e) {
+    // Prevent default for our custom keys
+    if (e.key === 'Tab' || e.key === 'Backspace' || e.key === 'Enter') {
+        e.preventDefault();
+    }
+    
+    if (!gameScreen.classList.contains('hidden')) {
+        if (e.key === 'Tab') {
+            // Tab moves forward through interactive elements
+            moveFocus('forward');
+        } else if (e.key === 'Backspace') {
+            // Backspace moves backward through interactive elements
+            moveFocus('backward');
+        } else if (e.key === 'Enter') {
+            // Enter activates the focused element
+            if (interactiveElements[focusedElementIndex]) {
+                interactiveElements[focusedElementIndex].click();
+            }
+        }
+    } else if (!menuScreen.classList.contains('hidden')) {
+        // In menu, Enter starts the game
+        if (e.key === 'Enter') {
+            startRandomGame();
+        }
+    } else if (!victoryScreen.classList.contains('hidden')) {
+        // In victory screen, Enter goes back to menu
+        if (e.key === 'Enter') {
+            showMenu();
+        }
+    }
+}
+
+document.addEventListener('keydown', handleKeydown);
+
 function showMenu() {
     menuScreen.classList.remove('hidden');
     gameScreen.classList.add('hidden');
     victoryScreen.classList.add('hidden');
     currentMode = '';
     currentQuestionIndex = 0;
+    
+    // Set focus on start button for keyboard navigation
+    setTimeout(() => {
+        const startBtn = document.getElementById('start-game-btn');
+        if (startBtn) {
+            startBtn.focus();
+            startBtn.classList.add('focused');
+        }
+    }, 0);
 }
 
 function startRandomGame() {
@@ -118,6 +190,23 @@ function loadQuestion() {
 
     ttsBtn.onclick = toggleTTS;
     attachTTS(questionText, () => (currentMode === 'complete-phrase' ? question.text.replace('___', 'espaço em branco') : questionText.innerText));
+    
+    // Update interactive elements and focus on the first option
+    setTimeout(() => {
+        updateInteractiveElements();
+        // Focus on the first question option (skip TTS button)
+        const optionButtons = interactiveElements.filter(el => 
+            el.classList.contains('option-btn') || 
+            el.classList.contains('syllable-btn') || 
+            el.classList.contains('key')
+        );
+        if (optionButtons.length > 0) {
+            clearFocus();
+            focusedElementIndex = interactiveElements.indexOf(optionButtons[0]);
+            optionButtons[0].focus();
+            optionButtons[0].classList.add('focused');
+        }
+    }, 0);
 }
 
 function renderImageMatch(q) {
@@ -231,6 +320,19 @@ function checkAnswer(selected, correct, element) {
     }
     scoreDisplay.innerText = `Pontos: ${score}`;
     feedback.classList.remove('hidden');
+    
+    // Update interactive elements and focus on the action button (next or retry)
+    setTimeout(() => {
+        updateInteractiveElements();
+        // Focus on the visible action button (next or retry)
+        const actionButton = isCorrect ? nextBtn : retryBtn;
+        if (actionButton && !actionButton.classList.contains('hidden')) {
+            clearFocus();
+            focusedElementIndex = interactiveElements.indexOf(actionButton);
+            actionButton.focus();
+            actionButton.classList.add('focused');
+        }
+    }, 0);
 }
 
 function loadNextQuestion() {
@@ -247,6 +349,15 @@ function showVictoryScreen() {
     victoryScreen.classList.remove('hidden');
     finalScoreDisplay.innerText = `Pontuação Final: ${score}`;
     playSound('finish.mp3');
+    
+    // Set focus on the play again button for keyboard navigation
+    setTimeout(() => {
+        const playAgainBtn = victoryScreen.querySelector('button');
+        if (playAgainBtn) {
+            playAgainBtn.focus();
+            playAgainBtn.classList.add('focused');
+        }
+    }, 0);
 }
 
 function saveNewQuestion(question) {
@@ -256,3 +367,12 @@ function saveNewQuestion(question) {
 }
 
 initQuestions();
+
+// Set initial focus on the start button when page loads
+window.addEventListener('load', () => {
+    const startBtn = document.getElementById('start-game-btn');
+    if (startBtn) {
+        startBtn.focus();
+        startBtn.classList.add('focused');
+    }
+});

@@ -101,6 +101,12 @@ button:hover:not(:disabled) {
 
 button:active { transform: translateY(2px); }
 
+button.focused {
+  outline: 3px solid var(--azul);
+  outline-offset: 2px;
+  box-shadow: 0 0 10px rgba(52, 152, 219, 0.5);
+}
+
 #main-nav { margin-bottom: 10px; width: 100%; display: flex; justify-content: center; gap: 10px; flex-shrink: 0; }
 #main-nav button { 
   padding: 6px 12px; 
