@@ -1,6 +1,7 @@
 :root {
   --laranja: #F37021;
   --amarelo: #FFC20E;
+  --azul: #3498db;
   --cinza: #333333;
   --branco: #FFFFFF;
   --fundo: #f7f7f7;
@@ -123,11 +124,11 @@ button:active { transform: translateY(2px); }
   width: 100%;
   max-width: 320px;
   height: 180px;
-  object-fit: cover;
+  object-fit: contain;
   border-radius: var(--radius-md);
   margin-bottom: 10px;
   border: 1px solid #ddd;
-  background-color: #eee;
+  background-color: #f9f9f9;
   flex-shrink: 0;
 }
 

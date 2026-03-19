@@ -19,8 +19,8 @@
             </nav>
         </header>
 
-        <main>
-            <form id="add-question-form" class="admin-form">
+        <main class="screen">
+            <form id="add-question-form" class="admin-form" style="width: 100%; max-width: 500px; padding-bottom: 20px;">
                 <label for="mode">Modo de Jogo:</label>
                 <select id="mode" name="mode" required onchange="updateFormFields()">
                     <option value="image-match">Correspondência Imagem-Palavra</option>
@@ -41,8 +41,24 @@
                 <input type="text" id="correct_answer" name="correct_answer" required>
 
                 <button type="submit" style="background-color: var(--laranja); color: white; border: none; width: 100%; margin-top: 10px;">Adicionar Pergunta</button>
-                <button type="button" onclick="clearData()" style="background-color: #eee; color: #777; border: 1px solid #ddd; width: 100%; margin-top: 20px;">Apagar Todos os Dados</button>
             </form>
+
+            <div class="admin-form" style="margin-top: 30px; padding-top: 20px; border-top: 1px solid #ddd;">
+                <h3>Carregamento em Massa</h3>
+                <label for="json-file">Carregar JSON de perguntas:</label>
+                <input type="file" id="json-file" accept=".json">
+                
+                <div style="margin: 10px 0; display: flex; align-items: center; gap: 8px;">
+                    <input type="checkbox" id="replace-data" style="width: auto; margin: 0;">
+                    <label for="replace-data" style="margin: 0; font-size: 0.9em; color: var(--cinza); font-weight: normal;">Substituir dados existentes (se desmarcado, adiciona aos atuais)</label>
+                </div>
+                
+                <button type="button" onclick="uploadJSON()" style="background-color: var(--azul); color: white; border: none; width: 100%;">Carregar perguntas</button>
+            </div>
+
+            <div style="margin-top: 40px;">
+                <button type="button" onclick="clearData()" style="background-color: #eee; color: #777; border: 1px solid #ddd; width: 100%;">Apagar Todos os Dados</button>
+            </div>
         </main>
     </div>
 
@@ -85,6 +101,48 @@
                 reader.onerror = error => reject(error);
                 reader.readAsDataURL(file);
             });
+        }
+
+        async function uploadJSON() {
+            const fileInput = document.getElementById('json-file');
+            const replaceCheckbox = document.getElementById('replace-data');
+            
+            if (fileInput.files.length === 0) {
+                alert("Por favor, seleciona um ficheiro JSON.");
+                return;
+            }
+
+            const file = fileInput.files[0];
+            const reader = new FileReader();
+
+            reader.onload = (e) => {
+                try {
+                    const uploadedQuestions = JSON.parse(e.target.result);
+                    
+                    if (!Array.isArray(uploadedQuestions)) {
+                        throw new Error("O ficheiro JSON deve conter um array de perguntas.");
+                    }
+
+                    let questionsToSave;
+                    if (replaceCheckbox.checked) {
+                        questionsToSave = uploadedQuestions;
+                    } else {
+                        const storedQuestions = JSON.parse(localStorage.getItem('questions') || '[]');
+                        // Se não houver nada no localStorage, começamos com as initialData (como no script.js)
+                        const baseQuestions = storedQuestions.length > 0 ? storedQuestions : initialData;
+                        questionsToSave = [...baseQuestions, ...uploadedQuestions];
+                    }
+
+                    localStorage.setItem('questions', JSON.stringify(questionsToSave));
+                    localStorage.setItem('questions_version', DATA_VERSION);
+                    alert("Perguntas carregadas com sucesso!");
+                    fileInput.value = '';
+                } catch (error) {
+                    alert("Erro ao ler o ficheiro: " + error.message);
+                }
+            };
+
+            reader.readAsText(file);
         }
 
         form.onsubmit = async (e) => {

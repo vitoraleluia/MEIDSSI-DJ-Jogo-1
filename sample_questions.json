@@ -1,0 +1,83 @@
+[
+  {
+    "mode": "image-match",
+    "image": "https://cdn-icons-png.flaticon.com/512/415/415733.png",
+    "text": "O que é isto?",
+    "options": ["Maçã", "Pêra", "Uva"],
+    "correct_answer": "Maçã"
+  },
+  {
+    "mode": "image-match",
+    "image": "https://cdn-icons-png.flaticon.com/512/439/439842.png",
+    "text": "O que vês na imagem?",
+    "options": ["Lua", "Sol", "Estrela"],
+    "correct_answer": "Sol"
+  },
+  {
+    "mode": "image-match",
+    "image": "https://cdn-icons-png.flaticon.com/512/619/619153.png",
+    "text": "Onde vivemos?",
+    "options": ["Carro", "Casa", "Escola"],
+    "correct_answer": "Casa"
+  },
+  {
+    "mode": "complete-phrase",
+    "image": "https://cdn-icons-png.flaticon.com/512/616/616430.png",
+    "text": "O ___ gosta de brincar com novelos.",
+    "options": ["gato", "cão", "peixe"],
+    "correct_answer": "gato"
+  },
+  {
+    "mode": "complete-phrase",
+    "image": "https://cdn-icons-png.flaticon.com/512/166/166727.png",
+    "text": "A ___ é muito alta e tem o pescoço comprido.",
+    "options": ["zebra", "girafa", "leão"],
+    "correct_answer": "girafa"
+  },
+  {
+    "mode": "complete-phrase",
+    "image": "https://cdn-icons-png.flaticon.com/512/4977/4977738.png",
+    "text": "Os meninos jogam à ___ no recreio.",
+    "options": ["bola", "corda", "esconde-esconde"],
+    "correct_answer": "bola"
+  },
+  {
+    "mode": "syllable-builder",
+    "image": "https://cdn-icons-png.flaticon.com/512/831/831896.png",
+    "text": "Banana",
+    "syllables": ["Ba", "na", "na"],
+    "correct_answer": "Banana"
+  },
+  {
+    "mode": "syllable-builder",
+    "image": "https://cdn-icons-png.flaticon.com/512/3082/3082060.png",
+    "text": "Boneca",
+    "syllables": ["Bo", "ne", "ca"],
+    "correct_answer": "Boneca"
+  },
+  {
+    "mode": "syllable-builder",
+    "image": "https://cdn-icons-png.flaticon.com/512/2872/2872620.png",
+    "text": "Sapato",
+    "syllables": ["Sa", "pa", "to"],
+    "correct_answer": "Sapato"
+  },
+  {
+    "mode": "keyboard-typing",
+    "image": "https://cdn-icons-png.flaticon.com/512/741/741407.png",
+    "text": "Carro",
+    "correct_answer": "Carro"
+  },
+  {
+    "mode": "keyboard-typing",
+    "image": "https://cdn-icons-png.flaticon.com/512/2970/2970068.png",
+    "text": "Peixe",
+    "correct_answer": "Peixe"
+  },
+  {
+    "mode": "keyboard-typing",
+    "image": "https://cdn-icons-png.flaticon.com/512/4846/4846086.png",
+    "text": "Koala",
+    "correct_answer": "Koala"
+  }
+]
